@@ -1,7 +1,7 @@
 import { formatDate } from "@/utils";
 import useCollectionStore from "@/store/collectionsStore";
 
-const CollectionItemCard = ({ obj }) => {
+const CollectionItemCard = ({ obj, key }) => {
   const toggleShowAsset = useCollectionStore((store) => store.toggleShowAsset);
   const updateActiveCollection = useCollectionStore(
     (store) => store.updateActiveCollection
@@ -14,7 +14,7 @@ const CollectionItemCard = ({ obj }) => {
     <div
       className="p-4 border-slate-200 border-2 rounded hover:bg-slate-100 hover:cursor-pointer "
       onClick={() => handleItemClick(obj)}
-      key={obj.id}
+      key={key}
     >
       <p className="text-lg">{obj.id}</p>
       <div className="flex flex-row items-center justify-between">

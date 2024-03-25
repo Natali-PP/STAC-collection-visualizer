@@ -115,7 +115,7 @@ const Result = () => {
         </h1>
         <div className="grid grid-cols-2 gap-6">
           {paginatedData?.map((obj) => (
-            <CollectionItemCard obj={obj} />
+            <CollectionItemCard obj={obj} key={obj.id} />
           ))}
         </div>
         <ReactPaginate
