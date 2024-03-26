@@ -78,7 +78,7 @@ export default function Home() {
       >
         <h1>STAC Server Visualizer</h1>
         <h1 className="w-3/4 text-center">
-          You're going to access the{" "}
+          You&apos;re going to access the{" "}
           <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded">
             landsat8_c2l1t1
           </span>{" "}
