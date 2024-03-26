@@ -6,7 +6,6 @@ import Map, { Source, Layer } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { isEmpty } from "@/utils";
 import { useRouter } from "next/router";
-import useStore from "@/store/useStore";
 
 const MapInterface = () => {
   const [viewPort, setViewPort] = useState();
@@ -36,13 +35,6 @@ const MapInterface = () => {
 
   useEffect(() => {
     if (!isEmpty(bboxState)) {
-      /*       setTurfBbox([
-        Math.min(bboxState[0], bboxState[2]),
-        Math.min(bboxState[1], bboxState[3]),
-        Math.max(bboxState[0], bboxState[2]),
-        Math.max(bboxState[1], bboxState[3]),
-      ]); */
-
       //minX, minY, maxX, maxY order (120.0,0.0,130.0,-10.0)
       setTurfBbox([bboxState[1], bboxState[2], bboxState[0], bboxState[3]]);
     } else {
@@ -56,12 +48,6 @@ const MapInterface = () => {
   }, [bboxState]);
 
   useEffect(() => {
-    /*     if (isEmpty(bbox)) {
-      router.push("/");
-      return;
-    } */
-
-    console.log("TURFFFFFFFFFFFFFFFFFFFFFFFFFFF", turfBbox, bboxState);
     if (!isEmpty(turfBbox)) {
       // Fit the map to the bounding box
       const bboxPoly = bboxPolygon(turfBbox);
@@ -76,12 +62,6 @@ const MapInterface = () => {
       setViewPort(newViewport);
     }
   }, [turfBbox]);
-
-  /*   const handleItemClick = (obj) => {
-    console.log("SE ACTIVAAAA", obj);
-    updateActiveCollection(obj);
-    toggleShowAsset(true);
-  }; */
 
   const handleClick = (e) => {
     const { point, target: map } = e;

@@ -1,13 +1,10 @@
-//import Map, { Source, Layer } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { Inter } from "next/font/google";
 import React, { useEffect, useState } from "react";
-/* import bboxPolygon from "@turf/bbox-polygon";
-import centroid from "@turf/centroid"; */
+
 import useCollectionStore from "@/store/collectionsStore";
 import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
-/* import { formatDate, isEmpty } from "@/utils";
- */ import { AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import ActiveAsset from "@/components/ActiveAsset/ActiveAsset";
 import Link from "next/link";
 import ReactPaginate from "react-paginate";
@@ -15,29 +12,17 @@ import { fetchSTAC } from "@/services/services";
 import MapInterface from "@/components/MapInterface/MapInterface";
 import CollectionItemCard from "@/components/CollectionItemCard/CollectionItemCard";
 import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
-import useStore from "@/store/useStore";
 import { isEmpty } from "@/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 const Result = () => {
-  //https://eod-catalog-svc-prod.astraea.earth/collections/landsat8_c2l1t1
   const [stacItems, setSTACItems] = useState([]);
-  //const [viewPort, setViewPort] = useState();
   const [currentPage, setCurrentPage] = useState(0);
   const [loading, setLoading] = useState();
   const [bboxState, setBboxState] = useState([]);
   const [dateRangeState, setDateRangeState] = useState({});
   const itemsPerPage = 10; // Number of items to display per page
-  /*   const updateActiveCollection = useCollectionStore(
-    (store) => store.updateActiveCollection
-  );
-  const activeCollection = useCollectionStore(
-    (store) => store.activeCollection
-  );
-  const toggleShowAsset = useCollectionStore((store) => store.toggleShowAsset); */
   const showAsset = useCollectionStore((store) => store.showAsset);
-  const catalogUrl = useCollectionStore((store) => store.STACServerUrl);
-  const collectionId = useCollectionStore((store) => store.collectionId);
   const dateRange = useCollectionStore((store) => store.dateRange);
   const bbox = useCollectionStore((store) => store.bbox);
   const updatePaginatedData = useCollectionStore(

@@ -4,7 +4,6 @@ import Datepicker from "react-tailwindcss-datepicker";
 import useCollectionStore from "@/store/collectionsStore";
 import { useRouter } from "next/router";
 import GlobeAnimation from "@/components/GlobeAnimation/GlobeAnimation";
-import useStore from "@/store/useStore";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
@@ -17,7 +16,6 @@ export default function Home() {
   const [errorMinY, setErrorMinY] = useState(false);
   const [errorMaxX, setErrorMaxX] = useState(false);
   const [errorMaxY, setErrorMaxY] = useState(false);
-  const [dateRangeState, setDateRangeState] = useState();
   const updateDateRange = useCollectionStore((store) => store.updateDateRange);
   const dateRange = useCollectionStore((store) => store.dateRange);
   const updateBbox = useCollectionStore((store) => store.updateBbox);
