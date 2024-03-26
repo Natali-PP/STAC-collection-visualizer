@@ -82,7 +82,7 @@ const Result = () => {
             <LoadingSpinner />
           </div>
         )}
-        <div className="">
+        <div className="flex items-center justify-between mb-4">
           <Link href="/" className="flex gap-2">
             <ArrowLeft width={20} /> Back
           </Link>
