@@ -1,13 +1,13 @@
-import Map, { Source, Layer } from "react-map-gl";
+//import Map, { Source, Layer } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { Inter } from "next/font/google";
 import React, { useEffect, useState } from "react";
-import bboxPolygon from "@turf/bbox-polygon";
-import centroid from "@turf/centroid";
+/* import bboxPolygon from "@turf/bbox-polygon";
+import centroid from "@turf/centroid"; */
 import useCollectionStore from "@/store/collectionsStore";
 import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
-import { formatDate, isEmpty } from "@/utils";
-import { AnimatePresence } from "framer-motion";
+/* import { formatDate, isEmpty } from "@/utils";
+ */ import { AnimatePresence } from "framer-motion";
 import ActiveAsset from "@/components/ActiveAsset/ActiveAsset";
 import Link from "next/link";
 import ReactPaginate from "react-paginate";
@@ -15,36 +15,50 @@ import { fetchSTAC } from "@/services/services";
 import MapInterface from "@/components/MapInterface/MapInterface";
 import CollectionItemCard from "@/components/CollectionItemCard/CollectionItemCard";
 import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
+import useStore from "@/store/useStore";
+import { isEmpty } from "@/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 const Result = () => {
   //https://eod-catalog-svc-prod.astraea.earth/collections/landsat8_c2l1t1
-
   const [stacItems, setSTACItems] = useState([]);
-  const [viewPort, setViewPort] = useState();
+  //const [viewPort, setViewPort] = useState();
   const [currentPage, setCurrentPage] = useState(0);
   const [loading, setLoading] = useState();
+  const [bboxState, setBboxState] = useState([]);
+  const [dateRangeState, setDateRangeState] = useState({});
   const itemsPerPage = 10; // Number of items to display per page
-  const updateActiveCollection = useCollectionStore(
+  /*   const updateActiveCollection = useCollectionStore(
     (store) => store.updateActiveCollection
   );
   const activeCollection = useCollectionStore(
     (store) => store.activeCollection
   );
-  const toggleShowAsset = useCollectionStore((store) => store.toggleShowAsset);
+  const toggleShowAsset = useCollectionStore((store) => store.toggleShowAsset); */
   const showAsset = useCollectionStore((store) => store.showAsset);
   const catalogUrl = useCollectionStore((store) => store.STACServerUrl);
   const collectionId = useCollectionStore((store) => store.collectionId);
   const dateRange = useCollectionStore((store) => store.dateRange);
+  const bbox = useCollectionStore((store) => store.bbox);
   const updatePaginatedData = useCollectionStore(
     (store) => store.updatePaginatedData
   );
 
   useEffect(() => {
+    setBboxState(bbox);
+  }, [bbox]);
+
+  useEffect(() => {
+    setDateRangeState(dateRange);
+  }, [dateRange]);
+
+  useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await fetchSTAC(catalogUrl, collectionId, dateRange);
+        console.log("ITEMSSSSSSSSSS FETCH", bboxState, dateRangeState);
+        const response = await fetchSTAC(dateRangeState, bboxState);
+        console.log("response", response);
         if (response.ok) {
           const data = await response.json();
           setSTACItems(data.features);
@@ -55,31 +69,8 @@ const Result = () => {
         setLoading(false);
       }
     };
-    fetchData();
-  }, [catalogUrl, collectionId]);
-
-  /*   useEffect(() => {
-    console.log("items????", stacItems, stacItems.length);
-    console.log("tessssssssss", process.env.NEXT_PUBLIC_MAPBOX_TOKEN);
-  }, [stacItems]);
-
-  useEffect(() => {
-    console.log("ACTIVEEEEE COLLECTIONNNNN", activeCollection);
-    if (!isEmpty(activeCollection)) {
-      Object.keys(activeCollection.assets).map((key) =>
-        console.log(
-          "adentroooooooo activecollection",
-          key,
-          activeCollection.assets[key].title
-        )
-      );
-    }
-  }, [activeCollection]); */
-  /* 
-  const handleItemClick = (obj) => {
-    updateActiveCollection(obj);
-    toggleShowAsset(true);
-  }; */
+    if (!isEmpty(bboxState) && !isEmpty(dateRangeState)) fetchData();
+  }, [bboxState, dateRangeState]);
 
   // Calculate pagination data
   const offset = currentPage * itemsPerPage;
@@ -90,6 +81,9 @@ const Result = () => {
   const handlePageChange = ({ selected }) => {
     setCurrentPage(selected);
   };
+  useEffect(() => {
+    console.log("ITEMSSSSSSSSSS", stacItems);
+  }, [stacItems]);
   return (
     <main
       className={`flex  flex-row items-center justify-evenly ${inter.className} w-screen h-screen overflow-hidden`}
@@ -103,16 +97,18 @@ const Result = () => {
             <LoadingSpinner />
           </div>
         )}
-        <Link href="/" className="flex gap-2">
-          <ArrowLeft width={20} /> Back
-        </Link>
-        <h1>
-          Items in{" "}
-          <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded">
-            {collectionId}
-          </span>{" "}
-          collection{" "}
-        </h1>
+        <div className="">
+          <Link href="/" className="flex gap-2">
+            <ArrowLeft width={20} /> Back
+          </Link>
+          <h1>
+            Items in{" "}
+            <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded">
+              landsat8_c2l1t1
+            </span>{" "}
+            collection{" "}
+          </h1>
+        </div>
         <div className="grid grid-cols-2 gap-6">
           {paginatedData?.map((obj) => (
             <CollectionItemCard obj={obj} key={obj.id} />
@@ -128,7 +124,6 @@ const Result = () => {
           containerClassName="flex items-center justify-center mt-2 mb-4"
           pageClassName="block flex items-center justify-center border border-solid border-slate-200 w-10 h-10 hover:bg-slate-100 rounded mx-2"
           activeClassName="bg-blue-500 text-white"
-          //renderOnZeroPageCount={null}
         />
       </div>
       <AnimatePresence>{showAsset ? <ActiveAsset /> : null}</AnimatePresence>

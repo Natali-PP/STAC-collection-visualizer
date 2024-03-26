@@ -5,9 +5,13 @@ import React, { useEffect, useState } from "react";
 import Map, { Source, Layer } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { isEmpty } from "@/utils";
+import { useRouter } from "next/router";
+import useStore from "@/store/useStore";
 
 const MapInterface = () => {
   const [viewPort, setViewPort] = useState();
+  const [bboxState, setBboxState] = useState([]);
+  const [turfBbox, setTurfBbox] = useState([]);
   const showAsset = useCollectionStore((store) => store.showAsset);
   const activeCollection = useCollectionStore(
     (store) => store.activeCollection
@@ -17,37 +21,70 @@ const MapInterface = () => {
     (store) => store.updateActiveCollection
   );
   const toggleShowAsset = useCollectionStore((store) => store.toggleShowAsset);
+  const bbox = useCollectionStore((store) => store.bbox);
+  /*   const turfBbox = [
+    Math.min(bbox[0], bbox[2]),
+    Math.min(bbox[1], bbox[3]),
+    Math.max(bbox[0], bbox[2]),
+    Math.max(bbox[1], bbox[3]),
+  ]; */
+  const router = useRouter();
 
   useEffect(() => {
-    // Fit the map to the bounding box
-    const bbox = [120.0, -10.0, 130, 0]; // bounding box coordinates in documentation [minX, minY, maxX, maxY]
-    const bboxPoly = bboxPolygon(bbox);
-    const centroidBbox = centroid(bboxPoly);
-    const newViewport = {
-      width: "50vw",
-      height: "100vh",
-      longitude: centroidBbox.geometry.coordinates[0], //(minY + maxY) / 2,
-      latitude: centroidBbox.geometry.coordinates[1], //(minX + maxX) / 2,
-      zoom: 5,
-    };
-    setViewPort(newViewport);
-  }, []);
+    setBboxState(bbox);
+  }, [bbox]);
 
-  //paginatedData.map((obj) => console.log(obj.geometry));
+  useEffect(() => {
+    if (!isEmpty(bboxState)) {
+      /*       setTurfBbox([
+        Math.min(bboxState[0], bboxState[2]),
+        Math.min(bboxState[1], bboxState[3]),
+        Math.max(bboxState[0], bboxState[2]),
+        Math.max(bboxState[1], bboxState[3]),
+      ]); */
 
-  const handleItemClick = (obj) => {
+      //minX, minY, maxX, maxY order (120.0,0.0,130.0,-10.0)
+      setTurfBbox([bboxState[1], bboxState[2], bboxState[0], bboxState[3]]);
+    } else {
+      if (
+        isEmpty(
+          JSON.parse(sessionStorage.getItem("zustand-storage")).state.bbox
+        )
+      )
+        router.push("/");
+    }
+  }, [bboxState]);
+
+  useEffect(() => {
+    /*     if (isEmpty(bbox)) {
+      router.push("/");
+      return;
+    } */
+
+    console.log("TURFFFFFFFFFFFFFFFFFFFFFFFFFFF", turfBbox, bboxState);
+    if (!isEmpty(turfBbox)) {
+      // Fit the map to the bounding box
+      const bboxPoly = bboxPolygon(turfBbox);
+      const centroidBbox = centroid(bboxPoly);
+      const newViewport = {
+        width: "50vw",
+        height: "100vh",
+        longitude: centroidBbox.geometry.coordinates[0], //(minY + maxY) / 2,
+        latitude: centroidBbox.geometry.coordinates[1], //(minX + maxX) / 2,
+        zoom: 5,
+      };
+      setViewPort(newViewport);
+    }
+  }, [turfBbox]);
+
+  /*   const handleItemClick = (obj) => {
     console.log("SE ACTIVAAAA", obj);
     updateActiveCollection(obj);
     toggleShowAsset(true);
-  };
+  }; */
 
   const handleClick = (e) => {
-    /*     setClickedCoord({
-      latitude: e.lngLat.lat,
-      longitude: e.lngLat.lng
-    }) */
     const { point, target: map } = e;
-
     const bbox = [
       [point.x - 10, point.y - 10],
       [point.x + 10, point.y + 10],
@@ -79,20 +116,7 @@ const MapInterface = () => {
         >
           {showAsset ? null : (
             <>
-              <Source
-                id="bbox"
-                type="geojson"
-                data={bboxPolygon([120.0, 0.0, 130, -10])}
-              >
-                {/*                 <Layer
-                  id="bbox-layer"
-                  type="fill"
-                  source="bbox"
-                  paint={{
-                    "fill-color": "#94a3b8",
-                    "fill-opacity": 0.25,
-                  }}
-                /> */}
+              <Source id="bbox" type="geojson" data={bboxPolygon(turfBbox)}>
                 <Layer
                   id="bbox-outline"
                   type="line"

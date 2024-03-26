@@ -3,51 +3,68 @@ import React, { useEffect, useState } from "react";
 import Datepicker from "react-tailwindcss-datepicker";
 import useCollectionStore from "@/store/collectionsStore";
 import { useRouter } from "next/router";
-import { motion } from "framer-motion";
 import GlobeAnimation from "@/components/GlobeAnimation/GlobeAnimation";
+import useStore from "@/store/useStore";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  const [errorCollectionId, setErrorCollectionId] = useState(false);
-  const [errorSTACServerUrl, setErrorSTACServerUrl] = useState(false);
   const [disableButton, setDisableButton] = useState(false);
+  const [minX, setMinX] = useState(0.0);
+  const [minY, setMinY] = useState(-10.0);
+  const [maxX, setMaxX] = useState(130.0);
+  const [maxY, setMaxY] = useState(120.0);
+  const [errorMinX, setErrorMinX] = useState(false);
+  const [errorMinY, setErrorMinY] = useState(false);
+  const [errorMaxX, setErrorMaxX] = useState(false);
+  const [errorMaxY, setErrorMaxY] = useState(false);
+  const [dateRangeState, setDateRangeState] = useState();
   const updateDateRange = useCollectionStore((store) => store.updateDateRange);
   const dateRange = useCollectionStore((store) => store.dateRange);
-  const collectionId = useCollectionStore((store) => store.collectionId);
-  const updateCollectionId = useCollectionStore(
-    (store) => store.updateCollectionId
-  );
-  const STACServerUrl = useCollectionStore((store) => store.STACServerUrl);
-  const updateSTACServerUrl = useCollectionStore(
-    (store) => store.updateSTACServerUrl
-  );
+  const updateBbox = useCollectionStore((store) => store.updateBbox);
   const router = useRouter();
 
   useEffect(() => {
-    collectionId !== "landsat8_c2l1t1"
-      ? setErrorCollectionId(true)
-      : setErrorCollectionId(false);
-  }, [collectionId]);
+    console.log(minX, minY, typeof minX);
+    if (!isNaN(minX) && !isNaN(minY && !isNaN(maxX) && !isNaN(maxY))) {
+      updateBbox([
+        parseFloat(maxX),
+        parseFloat(maxY),
+        parseFloat(minX),
+        parseFloat(minY),
+      ]);
+    }
+  }, [minX, minY, maxX, maxY]);
 
-  useEffect(() => {
-    STACServerUrl !== "https://eod-catalog-svc-prod.astraea.earth"
-      ? setErrorSTACServerUrl(true)
-      : setErrorSTACServerUrl(false);
-  }, [STACServerUrl]);
+  const handleMinX = (e) => {
+    setMinX(e.target.value);
+    !isNaN(e.target.value) ? setErrorMinX(false) : setErrorMinX(true);
+  };
+
+  const handleMinY = (e) => {
+    setMinY(e.target.value);
+    !isNaN(e.target.value) ? setErrorMinY(false) : setErrorMinY(true);
+  };
+
+  const handleMaxX = (e) => {
+    setMaxX(e.target.value);
+    !isNaN(e.target.value) ? setErrorMaxX(false) : setErrorMaxX(true);
+  };
+
+  const handleMaxY = (e) => {
+    setMaxY(e.target.value);
+    !isNaN(e.target.value) ? setErrorMaxY(false) : setErrorMaxY(true);
+  };
 
   const handleGetResults = () => {
-    if (!errorSTACServerUrl && !errorCollectionId) router.push("/result");
+    if (!errorMaxX && !errorMaxY && !errorMinX && !errorMinY)
+      router.push("/result");
   };
 
   useEffect(() => {
-    errorSTACServerUrl || errorCollectionId
+    errorMaxX || errorMaxY || errorMinX || errorMinY
       ? setDisableButton(true)
       : setDisableButton(false);
-  }, [disableButton, errorCollectionId, errorSTACServerUrl]);
-
-  useEffect(() => {
-    console.log("date", dateRange);
-  }, [dateRange]);
+  }, [disableButton, errorMaxX, errorMaxY, errorMinX, errorMinY]);
 
   return (
     <main
@@ -59,36 +76,79 @@ export default function Home() {
       <div
         className={`flex flex-col items-center justify-center gap-6 w-1/2 py-6 shadow-xl border-2 bg-slate-50`}
       >
-        <h1>Type here the STAC server URL you want to access</h1>
-        <input
-          className={`border-2 rounded w-3/4 py-2.5 pl-4 pr-14 focus:outline-none focus:ring-0${
-            errorSTACServerUrl
-              ? " border-red-500 focus:border-red-500 "
-              : " border-slate-300 focus:border-blue-500"
-          }`}
-          placeholder="https://eod-catalog-svc-prod.astraea.earth"
-          value={STACServerUrl}
-          onChange={(e) => updateSTACServerUrl(e.target.value)}
-        ></input>
-        {errorSTACServerUrl ? (
-          <p className="text-sm text-red-700">
-            Enter the valid STAC Server URL
-          </p>
-        ) : null}
-        <h1>Type here the collection ID</h1>
-        <input
-          className={`border-2 w-3/4 rounded py-2.5 pl-4 pr-14 focus:outline-none focus:ring-0${
-            errorCollectionId
-              ? " border-red-500 focus:border-red-500 "
-              : " border-slate-300 focus:border-blue-500"
-          }`}
-          placeholder="landsat8_c2l1t1"
-          value={collectionId}
-          onChange={(e) => updateCollectionId(e.target.value)}
-        ></input>
-        {errorCollectionId ? (
-          <p className="text-sm text-red-700">Enter the valid collection ID</p>
-        ) : null}
+        <h1>STAC Server Visualizer</h1>
+        <h1 className="w-3/4 text-center">
+          You're going to access the{" "}
+          <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded">
+            landsat8_c2l1t1
+          </span>{" "}
+          collection
+        </h1>
+        <h1>
+          {" "}
+          At the server{" "}
+          <span className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded">
+            eod-catalog-svc-prod.astraea.earth
+          </span>
+        </h1>
+
+        <div className="flex items-center justify-center flex-col">
+          <h1>Enter a location</h1>
+        </div>
+        <div className="grid grid-cols-4 gap-12 w-3/4">
+          <div className="flex flex-col  items-center justify-between gap-4 ">
+            <p className="text-sm ">Max X</p>
+            <input
+              className={`border-2 rounded text-center w-full p-2 focus:outline-none focus:ring-0${
+                errorMaxX
+                  ? " border-red-500 focus:border-red-500 "
+                  : " border-slate-300 focus:border-blue-500"
+              }`}
+              placeholder="120.0"
+              value={maxX}
+              onChange={(e) => handleMaxX(e)}
+            ></input>
+          </div>
+          <div className="flex flex-col  items-center justify-between gap-4 ">
+            <p className="text-sm">Max Y</p>
+            <input
+              className={`border-2 rounded text-center w-full p-2 focus:outline-none focus:ring-0${
+                errorMaxY
+                  ? " border-red-500 focus:border-red-500 "
+                  : " border-slate-300 focus:border-blue-500"
+              }`}
+              placeholder="120.0"
+              value={maxY}
+              onChange={(e) => handleMaxY(e)}
+            ></input>
+          </div>
+          <div className="flex flex-col items-center justify-center gap-4 ">
+            <p className="text-sm ">Min X</p>
+            <input
+              className={`border-2 rounded text-center w-full p-2 focus:outline-none focus:ring-0${
+                errorMinX
+                  ? " border-red-500 focus:border-red-500 "
+                  : " border-slate-300 focus:border-blue-500"
+              }`}
+              placeholder="120.0"
+              value={minX}
+              onChange={(e) => handleMinX(e)}
+            ></input>
+          </div>
+          <div className="flex flex-col  items-center justify-between gap-4 ">
+            <p className="text-sm ">Min Y</p>
+            <input
+              className={`border-2 rounded text-center w-full p-2 focus:outline-none focus:ring-0${
+                errorMinY
+                  ? " border-red-500 focus:border-red-500 "
+                  : " border-slate-300 focus:border-blue-500"
+              }`}
+              placeholder="120.0"
+              value={minY}
+              onChange={(e) => handleMinY(e)}
+            ></input>
+          </div>
+        </div>
         <h1>Choose a date range to get your data</h1>
         <div className="w-3/4">
           <Datepicker
@@ -97,7 +157,6 @@ export default function Home() {
             displayFormat={"DD/MM/YYYY"}
             inputClassName={`${inter.className} border-slate-300 border-2 rounded w-full py-2.5 pl-4 pr-14`}
             startFrom={dateRange.startDate}
-            //isForwardLooking={false}
           />
         </div>
         <button
