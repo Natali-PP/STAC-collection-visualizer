@@ -1,7 +1,6 @@
 import "mapbox-gl/dist/mapbox-gl.css";
 import { Inter } from "next/font/google";
 import React, { useEffect, useState } from "react";
-
 import useCollectionStore from "@/store/collectionsStore";
 import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
