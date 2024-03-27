@@ -11,7 +11,7 @@ export const fetchSTAC = async (dateRange, bbox) => {
           datetime: `${dateRange.startDate}T00:00:00Z/${dateRange.endDate}T00:00:00Z`,
           collections: ["landsat8_c2l1t1"],
           limit: 50,
-          bbox: bbox, //[130.0, 120.0, 0.0, -10.0], //(180,-180,90,-90)
+          bbox: bbox,
         }),
       }
     );

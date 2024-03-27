@@ -8,10 +8,10 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   const [disableButton, setDisableButton] = useState(false);
-  const [minX, setMinX] = useState(0.0);
-  const [minY, setMinY] = useState(-10.0);
+  const [minX, setMinX] = useState(120.0);
+  const [minY, setMinY] = useState(0.0);
   const [maxX, setMaxX] = useState(130.0);
-  const [maxY, setMaxY] = useState(120.0);
+  const [maxY, setMaxY] = useState(-10.0);
   const [errorMinX, setErrorMinX] = useState(false);
   const [errorMinY, setErrorMinY] = useState(false);
   const [errorMaxX, setErrorMaxX] = useState(false);
@@ -25,10 +25,10 @@ export default function Home() {
     console.log(minX, minY, typeof minX);
     if (!isNaN(minX) && !isNaN(minY && !isNaN(maxX) && !isNaN(maxY))) {
       updateBbox([
-        parseFloat(maxX),
-        parseFloat(maxY),
         parseFloat(minX),
         parseFloat(minY),
+        parseFloat(maxX),
+        parseFloat(maxY),
       ]);
     }
   }, [minX, minY, maxX, maxY]);
@@ -94,32 +94,6 @@ export default function Home() {
           <h1>Enter a location</h1>
         </div>
         <div className="grid grid-cols-4 gap-12 w-3/4">
-          <div className="flex flex-col  items-center justify-between gap-4 ">
-            <p className="text-sm ">Max X</p>
-            <input
-              className={`border-2 rounded text-center w-full p-2 focus:outline-none focus:ring-0${
-                errorMaxX
-                  ? " border-red-500 focus:border-red-500 "
-                  : " border-slate-300 focus:border-blue-500"
-              }`}
-              placeholder="120.0"
-              value={maxX}
-              onChange={(e) => handleMaxX(e)}
-            ></input>
-          </div>
-          <div className="flex flex-col  items-center justify-between gap-4 ">
-            <p className="text-sm">Max Y</p>
-            <input
-              className={`border-2 rounded text-center w-full p-2 focus:outline-none focus:ring-0${
-                errorMaxY
-                  ? " border-red-500 focus:border-red-500 "
-                  : " border-slate-300 focus:border-blue-500"
-              }`}
-              placeholder="120.0"
-              value={maxY}
-              onChange={(e) => handleMaxY(e)}
-            ></input>
-          </div>
           <div className="flex flex-col items-center justify-center gap-4 ">
             <p className="text-sm ">Min X</p>
             <input
@@ -144,6 +118,32 @@ export default function Home() {
               placeholder="120.0"
               value={minY}
               onChange={(e) => handleMinY(e)}
+            ></input>
+          </div>
+          <div className="flex flex-col  items-center justify-between gap-4 ">
+            <p className="text-sm ">Max X</p>
+            <input
+              className={`border-2 rounded text-center w-full p-2 focus:outline-none focus:ring-0${
+                errorMaxX
+                  ? " border-red-500 focus:border-red-500 "
+                  : " border-slate-300 focus:border-blue-500"
+              }`}
+              placeholder="120.0"
+              value={maxX}
+              onChange={(e) => handleMaxX(e)}
+            ></input>
+          </div>
+          <div className="flex flex-col  items-center justify-between gap-4 ">
+            <p className="text-sm">Max Y</p>
+            <input
+              className={`border-2 rounded text-center w-full p-2 focus:outline-none focus:ring-0${
+                errorMaxY
+                  ? " border-red-500 focus:border-red-500 "
+                  : " border-slate-300 focus:border-blue-500"
+              }`}
+              placeholder="120.0"
+              value={maxY}
+              onChange={(e) => handleMaxY(e)}
             ></input>
           </div>
         </div>

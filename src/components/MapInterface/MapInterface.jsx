@@ -21,12 +21,6 @@ const MapInterface = () => {
   );
   const toggleShowAsset = useCollectionStore((store) => store.toggleShowAsset);
   const bbox = useCollectionStore((store) => store.bbox);
-  /*   const turfBbox = [
-    Math.min(bbox[0], bbox[2]),
-    Math.min(bbox[1], bbox[3]),
-    Math.max(bbox[0], bbox[2]),
-    Math.max(bbox[1], bbox[3]),
-  ]; */
   const router = useRouter();
 
   useEffect(() => {
@@ -35,8 +29,16 @@ const MapInterface = () => {
 
   useEffect(() => {
     if (!isEmpty(bboxState)) {
-      //minX, minY, maxX, maxY order (120.0,0.0,130.0,-10.0)
-      setTurfBbox([bboxState[1], bboxState[2], bboxState[0], bboxState[3]]);
+      //minX, minY, maxX, maxY  absolute value order (120.0,0.0,130.0,-10.0)
+      setTurfBbox([
+        Math.min(bbox[0], bbox[2]),
+        Math.min(bbox[1], bbox[3]),
+        Math.max(bbox[0], bbox[2]),
+        Math.max(bbox[1], bbox[3]),
+      ]);
+      //setTurfBbox([bboxState[1], bboxState[2], bboxState[0], bboxState[3]]);
+      //commented becouse there were many switches between valid bbox ranges
+      // on the server side during development
     } else {
       if (
         isEmpty(

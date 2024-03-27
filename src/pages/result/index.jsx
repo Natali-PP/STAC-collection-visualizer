@@ -21,6 +21,7 @@ const Result = () => {
   const [loading, setLoading] = useState();
   const [bboxState, setBboxState] = useState([]);
   const [dateRangeState, setDateRangeState] = useState({});
+  const [hasFetched, setHasFetched] = useState(false);
   const itemsPerPage = 10; // Number of items to display per page
   const showAsset = useCollectionStore((store) => store.showAsset);
   const dateRange = useCollectionStore((store) => store.dateRange);
@@ -41,7 +42,6 @@ const Result = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        console.log("ITEMSSSSSSSSSS FETCH", bboxState, dateRangeState);
         const response = await fetchSTAC(dateRangeState, bboxState);
         console.log("response", response);
         if (response.ok) {
@@ -52,6 +52,7 @@ const Result = () => {
         console.log("Error fetching STAC items:", e);
       } finally {
         setLoading(false);
+        setHasFetched(true);
       }
     };
     if (!isEmpty(bboxState) && !isEmpty(dateRangeState)) fetchData();
@@ -66,9 +67,7 @@ const Result = () => {
   const handlePageChange = ({ selected }) => {
     setCurrentPage(selected);
   };
-  useEffect(() => {
-    console.log("ITEMSSSSSSSSSS", stacItems);
-  }, [stacItems]);
+
   return (
     <main
       className={`flex  flex-row items-center justify-evenly ${inter.className} w-screen h-screen overflow-hidden`}
@@ -94,22 +93,31 @@ const Result = () => {
             collection{" "}
           </h1>
         </div>
-        <div className="grid grid-cols-2 gap-6">
-          {paginatedData?.map((obj) => (
-            <CollectionItemCard obj={obj} key={obj.id} />
-          ))}
-        </div>
-        <ReactPaginate
-          breakLabel={<span className="mx-2">...</span>}
-          nextLabel={<ChevronRight className="rounded" />}
-          onPageChange={handlePageChange}
-          pageRangeDisplayed={3}
-          pageCount={pageCount}
-          previousLabel={<ChevronLeft className="rounded" />}
-          containerClassName="flex items-center justify-center mt-2 mb-4"
-          pageClassName="block flex items-center justify-center border border-solid border-slate-200 w-10 h-10 hover:bg-slate-100 rounded mx-2"
-          activeClassName="bg-blue-500 text-white"
-        />
+        {hasFetched && stacItems.length === 0 ? (
+          <h1 className="text-2xl flex items-center justify-center p-20 text-center">
+            Your search got no items! Try going back and change the dates or
+            location{" "}
+          </h1>
+        ) : (
+          <>
+            <div className="grid grid-cols-2 gap-6">
+              {paginatedData?.map((obj) => (
+                <CollectionItemCard obj={obj} key={obj.id} />
+              ))}
+            </div>
+            <ReactPaginate
+              breakLabel={<span className="mx-2">...</span>}
+              nextLabel={<ChevronRight className="rounded" />}
+              onPageChange={handlePageChange}
+              pageRangeDisplayed={3}
+              pageCount={pageCount}
+              previousLabel={<ChevronLeft className="rounded" />}
+              containerClassName="flex items-center justify-center mt-2 mb-4"
+              pageClassName="block flex items-center justify-center border border-solid border-slate-200 w-10 h-10 hover:bg-slate-100 rounded mx-2"
+              activeClassName="bg-blue-500 text-white"
+            />
+          </>
+        )}
       </div>
       <AnimatePresence>{showAsset ? <ActiveAsset /> : null}</AnimatePresence>
     </main>
