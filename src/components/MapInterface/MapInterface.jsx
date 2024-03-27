@@ -36,9 +36,8 @@ const MapInterface = () => {
         Math.max(bbox[0], bbox[2]),
         Math.max(bbox[1], bbox[3]),
       ]);
+      //commented code because there were many sudden changes between valid bbox ranges on the API definition side during development
       //setTurfBbox([bboxState[1], bboxState[2], bboxState[0], bboxState[3]]);
-      //commented becouse there were many switches between valid bbox ranges
-      // on the server side during development
     } else {
       if (
         isEmpty(
