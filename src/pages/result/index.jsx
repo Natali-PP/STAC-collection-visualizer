@@ -42,7 +42,6 @@ const Result = () => {
       setLoading(true);
       try {
         const response = await fetchSTAC(dateRangeState, bboxState);
-        console.log("response", response);
         if (response.ok) {
           const data = await response.json();
           setSTACItems(data.features);
