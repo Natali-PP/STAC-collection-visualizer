@@ -30,12 +30,15 @@ Then, install all dependencies:
 npm install
 ```
 
+Note: this project was developed using the node version 20.11. I strongly recommend using a tool like [nvm](https://github.com/nvm-sh/nvm) or any node version manager.
+
+
 This project uses Mapbox, so to run this locally, you'll need a [Mapbox Access Token](https://docs.mapbox.com/help/getting-started/access-tokens/)
 
 Once you have your acess token, create a `.env.local` file at the root of the project, and add:
 
 ```bash
-NEXT_PUBLIC_MAPBOX_TOKEN={YOUR ACCESS TOKEN}
+NEXT_PUBLIC_MAPBOX_TOKEN=YOUR_ACCESS_TOKEN
 ```
 
 Then, run the development server:
