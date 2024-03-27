@@ -30,7 +30,7 @@ Then, install all dependencies:
 npm install
 ```
 
-Note: this project was developed using the node version 20. I strongly recommend using a tool like [nvm](https://github.com/nvm-sh/nvm) or any node version manager.
+> Note: this project was developed using the node version 20. I strongly recommend using a tool like [nvm](https://github.com/nvm-sh/nvm) or any node version manager.
 
 
 This project uses Mapbox, so to run this locally, you'll need a [Mapbox Access Token](https://docs.mapbox.com/help/getting-started/access-tokens/)
