@@ -19,17 +19,7 @@ This application uses a number of open source projects to work properly:
 - [Lucide Icons](https://lucide.dev/) - Beautiful & consistent icons, made by the community.
 - [React Paginate](https://github.com/AdeleD/react-paginate) - A ReactJS component that creates a pagination.
 
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
-# 🪄 Features
-
-- Filter the data by select a date range and boundary box coordinates
-- 2 ways to access item data in the collection:
-  - Interacting with the map
-  - Clicking on the item card
-- Data pagination
-- Route change and item selection animation
-- Data persistence during the user session    
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).   
 
 # 🖥️ Run locally
 First clone this repository
@@ -59,5 +49,5 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 # 💡 Deployed project
 
-Go to [stac-collection-visualizer.vercel.app/](https://stac-collection-visualizer.vercel.app/) to access an online deployed version.
+Go to [stac-collection-visualizer.vercel.app/](https://stac-collection-visualizer.vercel.app/) to access the latest deployed version.
 
