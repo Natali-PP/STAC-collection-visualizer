@@ -22,7 +22,6 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    console.log(minX, minY, typeof minX);
     if (!isNaN(minX) && !isNaN(minY && !isNaN(maxX) && !isNaN(maxY))) {
       updateBbox([
         parseFloat(minX),
@@ -68,7 +67,7 @@ export default function Home() {
     <main
       className={`flex flex-col items-center justify-center ${inter.className} h-screen`}
     >
-      <div className="absolute top-0 left-0" style={{ zIndex: "-1" }}>
+      <div className="absolute top-12 left-12" style={{ zIndex: "-1" }}>
         <GlobeAnimation width={"800px"} height={"800px"} />
       </div>
       <div
