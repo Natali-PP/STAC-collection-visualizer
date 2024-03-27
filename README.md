@@ -2,7 +2,7 @@
 
 WebApp that allows you to view the items in the `landsat8_c2l1t1` collection, at the `https://eod-catalog-svc-prod.astraea.earth` static STAC server.
 
-# 🧑‍💻 Tech
+# 👩‍💻 Tech
 
 This application uses a number of open source projects to work properly:
 
@@ -20,6 +20,16 @@ This application uses a number of open source projects to work properly:
 - [React Paginate](https://github.com/AdeleD/react-paginate) - A ReactJS component that creates a pagination.
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).   
+
+# 🪄 Features
+
+- Filter by dates and location (boundary box coordinates)
+- 2 view modes for collection items:
+  - Map based: click in an item geometry
+  - Text based: click in a card's item
+- Pagination
+- Route change animation
+- Persisting data in user's session
 
 # 🖥️ Run locally
 First clone this repository
